@@ -1,0 +1,73 @@
+@charset "UTF-8";
+
+/* DARUMA風 ミニマル・クラフトデザイン */
+:root {
+    --bg-base: #fcfbf9;
+    --text-main: #262626;
+    --text-muted: #78716c;
+    --border-soft: #e7e5e4;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    font-family: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    letter-spacing: 0.03em;
+}
+
+.font-serif-title {
+    font-family: "Cormorant Garamond", "Noto Serif JP", serif;
+    letter-spacing: 0.18em;
+}
+
+/* スヌード編地プレビュー（縦に連なる日々の編み目シミュレーション） */
+.cowl-preview {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 100%;
+    max-width: 250px;
+    height: 560px;
+    border: 1px solid var(--border-soft);
+    border-radius: 4px;
+    overflow-y: auto;
+    background: #ffffff;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+}
+
+.cowl-row {
+    height: 4px;
+    width: 100%;
+    flex-shrink: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.cowl-row:hover {
+    transform: scaleY(2.2);
+    z-index: 10;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.25);
+}
+
+/* スクロールバー */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #d6d3d1;
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a29e;
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-results {
+    animation: fadeIn 0.35s ease-out forwards;
+}
