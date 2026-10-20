@@ -11,35 +11,19 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="min-h-screen font-sans antialiased">
+<body class="min-h-screen font-sans antialiased flex flex-col">
     <!-- Navigation Bar -->
-    <nav class="bg-white/90 backdrop-blur-sm border-b border-stone-200/80 sticky top-0 z-50 px-6 py-3.5">
-        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4">
+    <nav class="bg-white/90 backdrop-blur-sm border-b border-stone-200/80 sticky top-0 z-50 px-4 sm:px-6 py-3.5">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
             <div class="flex items-baseline gap-3">
-                <span class="font-serif-title text-lg tracking-[0.22em] font-medium text-stone-900">TEMPERATURE COWL</span>
+                <span class="font-serif-title text-base sm:text-lg tracking-[0.22em] font-medium text-stone-900">TEMPERATURE COWL</span>
                 <span class="text-[10px] tracking-[0.18em] text-stone-400 uppercase hidden sm:inline">365 Days Knitting</span>
-            </div>
-
-            <!-- Project Name Edit -->
-            <div class="flex items-center gap-2 bg-stone-50/80 px-3 py-1.5 rounded border border-stone-200/80 flex-1 max-w-xs">
-                <span class="material-icons text-stone-400 text-sm">edit</span>
-                <input type="text" id="pattern-name" value="My Project 2025" class="bg-transparent border-none focus:ring-0 outline-none text-xs font-medium text-stone-700 w-full" placeholder="プロジェクト名">
-            </div>
-
-            <!-- Save / Load Buttons -->
-            <div class="flex items-center gap-2">
-                <button type="button" id="export-chart" class="bg-white px-3.5 py-1.5 rounded border border-stone-300 text-xs tracking-wider text-stone-700 hover:border-stone-800 hover:text-stone-900 transition flex items-center gap-1.5 shadow-2xs">
-                    <span class="material-icons text-sm text-stone-500">save</span> 保存
-                </button>
-                <button type="button" id="import-chart" class="bg-stone-900 text-white px-3.5 py-1.5 rounded text-xs tracking-wider hover:bg-stone-800 transition flex items-center gap-1.5 shadow-2xs">
-                    <span class="material-icons text-sm text-stone-300">folder_open</span> ロード
-                </button>
             </div>
         </div>
     </nav>
 
     <!-- Main Layout -->
-    <main class="max-w-6xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <main class="max-w-6xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1 w-full">
         
         <!-- Left Sidebar: Controls -->
         <aside class="lg:col-span-4 space-y-6">
@@ -109,7 +93,6 @@
                     <textarea id="temp-data" rows="3" class="w-full mt-2 p-2.5 border border-dashed border-stone-200 rounded text-xs font-mono text-stone-700 bg-stone-50/50 focus:bg-white focus:border-stone-400 outline-none" placeholder="生成時に自動入力されます"></textarea>
                 </details>
             </section>
-            <input type="file" id="chart-file-input" class="hidden" accept=".json">
         </aside>
 
         <!-- Right: Results Panel -->
@@ -143,8 +126,8 @@
                                         <div class="text-[10px] tracking-[0.2em] uppercase text-stone-400 font-serif-title">PATTERN</div>
                                         <h3 class="text-xs font-medium tracking-wider text-stone-700">英文編み図 (Garter Stitch)</h3>
                                     </div>
-                                    <button type="button" id="download-pattern-en" class="bg-white border border-stone-300 text-stone-800 text-[11px] tracking-wider px-3 py-1 rounded hover:border-stone-900 transition flex items-center gap-1">
-                                        <span class="material-icons text-xs text-stone-500">download</span> DOWNLOAD
+                                    <button type="button" id="copy-pattern-en" class="bg-white border border-stone-300 text-stone-800 text-[11px] tracking-wider px-3 py-1 rounded hover:border-stone-900 transition flex items-center gap-1 active:scale-95">
+                                        <span class="material-icons text-xs text-stone-500">content_copy</span> コピー
                                     </button>
                                 </div>
                                 <div class="p-4 bg-stone-50 border border-stone-200/90 rounded">
@@ -195,6 +178,18 @@
             </section>
         </div>
     </main>
+
+    <!-- Footer / License -->
+    <footer class="mt-auto py-6 border-t border-stone-200/80 bg-white/50 text-center text-[11px] text-stone-400">
+        <div class="max-w-6xl mx-auto px-4 space-y-1">
+            <p>
+                Weather data by 
+                <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" class="underline hover:text-stone-700 transition">Open-Meteo.com</a> 
+                (<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" class="underline hover:text-stone-700 transition">CC BY 4.0</a>)
+            </p>
+            <p class="text-[10px] text-stone-400 tracking-wider">TEMPERATURE COWL &mdash; 365 Days Knitting Pattern</p>
+        </div>
+    </footer>
 
     <script src="script.js" defer></script>
 </body>

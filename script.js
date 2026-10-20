@@ -75,6 +75,7 @@ const DEFAULT_CHART = [
 
 let chart = JSON.parse(localStorage.getItem("temp-cowl-chart")) || [...DEFAULT_CHART];
 let lastFetchedKey = "";
+let currentProjectName = "";
 
 // ---------------------------------------------------------------------
 // ユーティリティ
@@ -84,9 +85,14 @@ function saveChart() {
     localStorage.setItem("temp-cowl-chart", JSON.stringify(chart));
 }
 
-function getProjectName(fallback = "My Temperature Cowl") {
-    const el = document.getElementById("pattern-name");
-    return el && el.value.trim() ? el.value.trim() : fallback;
+function getProjectName(fallback = "TEMPERATURE COWL") {
+    if (currentProjectName) return currentProjectName;
+    const citySelect = document.getElementById("city-select");
+    const cityName = citySelect && citySelect.selectedIndex >= 0 ? citySelect.options[citySelect.selectedIndex].text : "";
+    const yearEl = document.getElementById("year-input");
+    const year = yearEl ? yearEl.value : "";
+    if (cityName && year) return `${cityName} ${year}`;
+    return fallback;
 }
 
 function formatDate(year, dayIndex) {
@@ -227,7 +233,7 @@ document.getElementById("generate-btn").onclick = async () => {
                 const valid = data.daily[type].filter(t => t !== null && !isNaN(t));
                 if (valid.length === 0) throw new Error("有効な気温データが見つかりませんでした。");
                 document.getElementById("temp-data").value = valid.join("\n");
-                document.getElementById("pattern-name").value = `${cityName} ${year} (${typeLabel})`;
+                currentProjectName = `${cityName} ${year} (${typeLabel})`;
                 lastFetchedKey = currentKey;
             } else {
                 throw new Error("気象データの取得に失敗しました。");
@@ -349,66 +355,46 @@ function buildPattern() {
 }
 
 // ---------------------------------------------------------------------
-// ファイル操作
+// パターン・データのエクスポート / コピー
 // ---------------------------------------------------------------------
 
-document.getElementById("export-chart").onclick = () => {
-    const projName = getProjectName("my-temperature-cowl");
-    const data = {
-        name: projName,
-        chart: chart,
-        castOn: document.getElementById("cast-on-count").value || 30,
-        data: document.getElementById("temp-data").value,
-        cityIndex: document.getElementById("city-select").selectedIndex,
-        year: document.getElementById("year-input").value,
-        tempType: document.getElementById("temp-type-select").value
-    };
-    downloadFile(JSON.stringify(data, null, 2), `${projName}.json`, "application/json");
-};
+async function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+    }
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    return new Promise((resolve, reject) => {
+        document.execCommand("copy") ? resolve() : reject(new Error("コピーに失敗しました"));
+        textArea.remove();
+    });
+}
 
-document.getElementById("import-chart").onclick = () => {
-    document.getElementById("chart-file-input").click();
-};
-
-document.getElementById("chart-file-input").onchange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
+const copyBtn = document.getElementById("copy-pattern-en");
+if (copyBtn) {
+    copyBtn.onclick = async () => {
+        const text = document.getElementById("english-pattern-display").innerText;
+        if (!text) return alert("先にパターンを生成してください。");
         try {
-            const d = JSON.parse(ev.target.result);
-            if (d.chart) {
-                chart = d.chart;
-                if (d.name) document.getElementById("pattern-name").value = d.name;
-                if (d.castOn) document.getElementById("cast-on-count").value = d.castOn;
-                if (d.data) document.getElementById("temp-data").value = d.data;
-                if (d.cityIndex !== undefined) document.getElementById("city-select").selectedIndex = d.cityIndex;
-                if (d.year) document.getElementById("year-input").value = d.year;
-                if (d.tempType) document.getElementById("temp-type-select").value = d.tempType;
-                saveChart();
-                renderSettings();
-                buildPattern();
-            } else if (Array.isArray(d)) {
-                chart = d;
-                saveChart();
-                renderSettings();
-                if (isResultVisible()) buildPattern();
-            }
+            await copyToClipboard(text);
+            const originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = `<span class="material-icons text-xs text-emerald-600">check</span> コピー完了`;
+            copyBtn.classList.add("border-emerald-600", "text-emerald-700");
+            setTimeout(() => {
+                copyBtn.innerHTML = originalHTML;
+                copyBtn.classList.remove("border-emerald-600", "text-emerald-700");
+            }, 1800);
         } catch (err) {
-            alert(`ファイルの形式が正しくありません: ${err.message}`);
-        } finally {
-            e.target.value = "";
+            alert("クリップボードへのコピーに失敗しました。");
         }
     };
-    reader.readAsText(file);
-};
-
-document.getElementById("download-pattern-en").onclick = () => {
-    const text = document.getElementById("english-pattern-display").innerText;
-    if (!text) return alert("先にパターンを生成してください。");
-    const projName = getProjectName("cowl-pattern-en");
-    downloadFile(text, `${projName}.txt`, "text/plain;charset=utf-8");
-};
+}
 
 document.getElementById("download-pattern").onclick = () => {
     const raw = document.getElementById("temp-data").value.trim();
